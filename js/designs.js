@@ -31,6 +31,9 @@ right.src = "img/right.png";
 let rightstep = new Image();
 rightstep.src = "img/rightstep.png";
 
+background.onload = function () {
+    ctx.drawImage(background, 15, 50, 170, 200);
+}
 
 
 class hamtaro {
@@ -148,6 +151,3 @@ let randomWalking = (function () {
 
 
 
-background.onload = function () {
-    ctx.drawImage(background, 15, 50, 170, 200);
-}
