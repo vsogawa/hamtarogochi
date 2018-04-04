@@ -1,0 +1,20 @@
+/*
+
+div {
+    position: relative;
+    height: 400px;
+    width: 100%;
+}
+
+canvas {
+    position: absolute;
+    top: 200px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}*/
+
+canvas {
+    border: 4px solid tan;
+    box-shadow: 5px 5px #cbcbcb;
+    border-radius: 10px;
+}
