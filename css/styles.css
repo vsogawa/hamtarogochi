@@ -1,5 +1,3 @@
-/*
-
 div {
     position: relative;
     height: 400px;
@@ -11,10 +9,37 @@ canvas {
     top: 200px;
     left: 50%;
     transform: translate(-50%, -50%);
-}*/
+}
 
 canvas {
     border: 4px solid tan;
     box-shadow: 5px 5px #cbcbcb;
     border-radius: 10px;
+}
+
+.fa {
+    font-size: 34px;
+    position: absolute;
+    top: 308px;
+    cursor: pointer;
+}
+
+.fa:hover {
+    color: #c4c4a3;
+}
+
+.fa-gift {
+    left: 50%;
+    transform: translateX(-180%);
+}
+
+.fa-bug {
+    right: 50%;
+    transform: translateX(180%);    
+}
+
+.inactive {
+    cursor: not-allowed;
+    color: #c4c4a3;
+    pointer-events: none;
 }

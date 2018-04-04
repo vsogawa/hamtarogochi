@@ -5,66 +5,26 @@ let ctx = mainwindow.getContext("2d");
 ctx.fillStyle = "beige";
 ctx.fillRect(0, 0, mainwindow.width, mainwindow.height);
 
-let canvX, canvY, mouseIsDown = 0;
-mainwindow.addEventListener("mousedown", mouseDown, false);
-mainwindow.addEventListener("mouseup", mouseUp, false);
-
-function mouseDown(e) {
-    mouseIsDown = 1;
-    mouseXY();
-}
-
-function mouseUp(e) {
-    mouseIsDown = 0;
-}
 
 let bugEncounterRunning = false;
 let foodTimeRunning = false;
 
-function mouseXY(e) {
-    if (!e) {
-        let e = event;
-        canvX = e.pageX - mainwindow.offsetLeft;
-        canvY = e.pageY - mainwindow.offsetTop;
-        //showPos();
-        if (canvX > 70 && canvX < 95 && canvY > 259 && canvY < 283 && heartstatuscounter !== 1 && heartstatuscounter !== 0 && ham.phase === "idle") {
-            bugEncounter();
-            heartstatuscounter -= 1;
-            heartstatus = heartsarray[heartstatuscounter];
-        }
-        if (canvX > 70 && canvX < 95 && canvY > 259 && canvY < 283 && heartstatuscounter === 1 && ham.phase === "idle") {
-            heartstatuscounter -= 1;
-            heartstatus = heartsarray[heartstatuscounter];
-            confused();
-        }
-        if (canvX > 70 && canvX < 95 && canvY > 259 && canvY < 283 && heartstatuscounter === 0 && ham.phase === "idle") {
-            confused();
-        }
-        if (canvX > 29 && canvX < 54 && canvY > 259 && canvY < 283 && ham.phase === "idle") {
+let clickGift = (function () {
+    $(".fa-gift").click(function () {
+        if (ham.phase === "idle") {
             foodTime();
         }
-        //redrawAll();
-    }
-}
+    })
+})();
 
-function showPos() {
-    // large, centered, bright green text
-    ctx.font = "24pt Helvetica";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = "rgb(64,255,64)";
-    var str = canvX + ", " + canvY;
-    if (mouseIsDown)
-        str += " down";
-    if (!mouseIsDown)
-        str += " up";
-    ctx.clearRect(0, 0, mainwindow.width, mainwindow.height);
-    // draw text at center, max length to fit on canvas
-    ctx.fillText(str, mainwindow.width / 2, mainwindow.height / 2, mainwindow.width - 10);
-    // plot cursor
-    ctx.fillStyle = "black";
-    ctx.fillRect(canvX - 5, canvY - 5, 10, 10);
-}
+let clickBug = (function () {
+    $(".fa-bug").click(function () {
+        if (ham.phase === "idle") {
+            bugEncounter();
+        }
+    })
+})();
+
 /*
 let imageArray = ["background", "normal", "content", "eat", "gross", "happy", "sleep", "sleepy", "left", "leftstep", "right", "rightstep", "sniffleft", "sniffright", "hearts4",  "hearts3","hearts2","hearts1","hearts0", "food", "bug"];
 
@@ -132,14 +92,6 @@ let hearts1 = new Image();
 hearts1.src = "img/hearts1.png";
 let hearts0 = new Image();
 hearts0.src = "img/hearts0.png";
-let food = new Image();
-food.src = "img/food.png";
-let foodgray = new Image();
-foodgray.src = "img/foodgray.png";
-let bug = new Image();
-bug.src = "img/bug.png";
-let buggray = new Image();
-buggray.src = "img/buggray.png";
 let bug1 = new Image();
 bug1.src = "img/bug1.png";
 let bug2 = new Image();
@@ -231,8 +183,6 @@ background.onload = function () {
     ctx.drawImage(background, 15, 50, 170, 200);
     ctx.drawImage(ham.sprite, ham.x, ham.y);
     ctx.drawImage(heartstatus, 80, 65);
-    ctx.drawImage(food, 30, 260);
-    ctx.drawImage(bug, 70, 260);
     ctx.fillStyle = "tan";
     ctx.font = "20px Arial Black";
     ctx.fillText("Hamtarogochi!", 10, 35);
@@ -245,20 +195,15 @@ let redrawAll = function () {
     ctx.drawImage(background, 15, 50, 170, 200);
     ctx.drawImage(ham.sprite, ham.x, ham.y);
     ctx.drawImage(heartstatus, 80, 65);
-    if (ham.phase === "idle") {
-        ctx.drawImage(food, 30, 260);
-        ctx.drawImage(bug, 70, 260);
-    } else {
-        ctx.drawImage(foodgray, 30, 260);
-        ctx.drawImage(buggray, 70, 260);
-    }
     ctx.fillStyle = "tan";
     ctx.font = "20px Arial Black";
     ctx.fillText("Hamtarogochi!", 10, 35);
+    console.log(ham.phase);
 }
 
 let confused = function () {
     ham.phase = "confused";
+    $(".fa").addClass("inactive");
     ham.sprite = dizzy1;
     redrawAll();
     for (let w = 0; w < 13; w++) {
@@ -280,12 +225,16 @@ let confused = function () {
     }
     setTimeout(function () {
         ham.phase = "idle";
+        $(".fa").removeClass("inactive");
         ham.sprite = grouchy;
         redrawAll();
     }, 4550);
 }
 
 let stepLeft = function (steps) {
+    ham.phase = "walking";
+    $(".fa").addClass("inactive");
+    let totalInactiveLength = steps * 400 + 800;
     for (let a = 0; a < steps; a++) {
         setTimeout(function () {
             if (ham.x > 20 && a % 2 === 0) {
@@ -299,10 +248,19 @@ let stepLeft = function (steps) {
                 redrawAll();
             }
         }, 400 * (a + 1));
+
     }
+    setTimeout(function () {
+        ham.phase = "idle";
+        $(".fa").removeClass("inactive");
+        redrawAll();
+    }, totalInactiveLength);
 }
 
 let stepRight = function (steps) {
+    ham.phase = "walking";
+    $(".fa").addClass("inactive");
+    let totalInactiveLength = steps * 400 + 800;
     for (let a = 0; a < steps; a++) {
         setTimeout(function () {
             if (ham.x < 150 && a % 2 === 0) {
@@ -317,6 +275,11 @@ let stepRight = function (steps) {
             }
         }, 400 * (a + 1));
     }
+    setTimeout(function () {
+        ham.phase = "idle";
+        $(".fa").removeClass("inactive");
+        redrawAll();
+    }, totalInactiveLength);
 }
 
 let randomWalking = function () {
@@ -326,11 +289,11 @@ let randomWalking = function () {
             let direction = ["left", "right", "neutral", "lookleft", "lookright", "left", "right", "back"];
             let randomdirection = direction[Math.floor(Math.random() * direction.length)];
             if (randomdirection === "right" && ham.x !== 150) {
-                numSteps = (Math.floor(Math.random() * 6)) * 2;
+                numSteps = ((Math.floor(Math.random() * 6)) + 1) * 2;
                 stepRight(numSteps);
             }
             if (randomdirection === "left" && ham.x !== 20) {
-                numSteps = (Math.floor(Math.random() * 6)) * 2;
+                numSteps = ((Math.floor(Math.random() * 6)) + 1) * 2;
                 stepLeft(numSteps);
             }
             if (randomdirection === "neutral") {
@@ -371,6 +334,7 @@ randomWalking();
 
 let sleeping = function () {
     ham.phase = "sleepy";
+    $(".fa").addClass("inactive");
     ham.sprite = sleepy;
     redrawAll();
     let extraSleep = Math.floor(Math.random() * 8000);
@@ -397,19 +361,20 @@ let sleeping = function () {
             heartstatus = heartsarray[heartstatuscounter];
         }
         ham.phase = "idle";
+        $(".fa").removeClass("inactive");
         ham.sprite = wake;
         redrawAll();
     }, (sleepDuration + extraSleep))
 }
 
 let randomSleep = function () {
-    let timeToSleep = Math.floor(Math.random() * 30000);
+    let timeToSleep = Math.floor(Math.random() * 20000);
     setTimeout(function () {
         if (ham.phase === "idle") {
             sleeping();
             randomSleep();
         }
-    }, (30000 + timeToSleep))
+    }, (20000 + timeToSleep))
 }
 
 randomSleep();
@@ -420,21 +385,42 @@ let bugEncounter = function () {
         redrawAll();
         bugEncounterRunning = true;
         ham.phase = "bug";
+        $(".fa").addClass("inactive");
         let bugResponseArray = [gross, shock, scare1];
         let bugArray = [bug1, bug2];
-        let randomBug = bugArray[Math.floor(Math.random() * 2)];
+        let randomBug = bugArray[Math.floor(Math.random() * bugArray.length)];
         setTimeout(function () {
-            let randomresponse = bugResponseArray[Math.floor(Math.random() * 2)];
+            let randomresponse = bugResponseArray[Math.floor(Math.random() * bugResponseArray.length)];
             ham.sprite = randomresponse;
             redrawAll();
-            ctx.drawImage(randomBug, ham.x + 6, (ham.y - 20));
+            if (heartstatuscounter === 1 || heartstatuscounter === 0) {
+                if (heartstatuscounter === 1) {
+                    heartstatuscounter -= 1;
+                    heartstatus = heartsarray[heartstatuscounter];
+                }
+                redrawAll();
+                confused();
+                setTimeout(function () {
+                    ham.phase = "idle";
+                    $(".fa").removeClass("inactive");
+                    ham.sprite = hide;
+                    redrawAll();
+                    bugEncounterRunning = false;
+                }, 4700)
+            } else {
+                heartstatuscounter -= 1;
+                heartstatus = heartsarray[heartstatuscounter];
+                redrawAll();
+                ctx.drawImage(randomBug, ham.x + 6, (ham.y - 20));
+                setTimeout(function () {
+                    ham.phase = "idle";
+                    $(".fa").removeClass("inactive");
+                    ham.sprite = hide;
+                    redrawAll();
+                    bugEncounterRunning = false;
+                }, 2500)
+            }
         }, 100)
-        setTimeout(function () {
-            ham.phase = "idle";
-            ham.sprite = hide;
-            redrawAll();
-            bugEncounterRunning = false;
-        }, 2500)
     }
 }
 
@@ -443,6 +429,7 @@ let foodTime = function () {
         redrawAll();
         foodTimeRunning = true;
         ham.phase = "food";
+        $(".fa").addClass("inactive");
         let foodArray = [apple, goldapple, bean1, bean2, bean3, berry1, berry2, berry3, berry4, cd, drink, potion, seed, seed, seed, apple, apple, scarf, shades];
         let randomPosResponseArray = [getfood1, getfood2, getfood3, getfood4, content]
         let randomFood = foodArray[Math.floor(Math.random() * foodArray.length)];
@@ -478,6 +465,7 @@ let foodTime = function () {
                 }, 2500)
                 setTimeout(function () {
                     ham.phase = "idle";
+                    $(".fa").removeClass("inactive");
                     ham.sprite = normal;
                     redrawAll();
                     foodTimeRunning = false;
@@ -496,6 +484,7 @@ let foodTime = function () {
             };
             setTimeout(function () {
                 ham.phase = "idle";
+                $(".fa").removeClass("inactive");
                 ham.sprite = normal;
                 if (heartstatuscounter !== 4) {
                     heartstatuscounter += 1;
