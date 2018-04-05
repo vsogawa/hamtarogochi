@@ -201,6 +201,25 @@ let redrawAll = function () {
     console.log(ham.phase);
 }
 
+let getsHungry = function () {
+    setTimeout(function () {
+        if (heartstatuscounter === 1 || heartstatuscounter === 0) {
+            if (heartstatuscounter === 1) {
+                heartstatuscounter -= 1;
+                heartstatus = heartsarray[heartstatuscounter];
+            }
+            redrawAll();
+            confused();
+        } else {
+            heartstatuscounter -= 1;
+            heartstatus = heartsarray[heartstatuscounter];
+            redrawAll();
+        }
+        getsHungry();
+    }, 60000)
+}
+getsHungry();
+
 let confused = function () {
     ham.phase = "confused";
     $(".fa").addClass("inactive");
@@ -354,7 +373,7 @@ let sleeping = function () {
                 }
             }, 1000 * (c + 1));
         }
-    }, 4000)
+    }, 2500)
     setTimeout(function () {
         if (heartstatuscounter !== 4) {
             heartstatuscounter += 1;
@@ -368,6 +387,7 @@ let sleeping = function () {
 }
 
 let randomSleep = function () {
+    console.log("sleep?  check if idle!" + Date.now());
     let timeToSleep = Math.floor(Math.random() * 20000);
     setTimeout(function () {
         if (ham.phase === "idle") {
