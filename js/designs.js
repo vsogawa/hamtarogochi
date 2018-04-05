@@ -25,30 +25,6 @@ let clickBug = (function () {
     })
 })();
 
-/*
-let imageArray = ["background", "normal", "content", "eat", "gross", "happy", "sleep", "sleepy", "left", "leftstep", "right", "rightstep", "sniffleft", "sniffright", "hearts4",  "hearts3","hearts2","hearts1","hearts0", "food", "bug"];
-
-let myImageArray = [];
-
-for (let z = 0; z < imageArray.length; z++) {
-    let varName = imageArray[z];
-    //let `${varName}` = new Image();
-    let _temp = new Image();
-    //varName.src = `img/${varName}.png`;
-    _temp.src = `img/${varName}.png`;
-    _temp.name = varName;
-    myImageArray.push(_temp);
-}
-
-let getSprite = function(name) {
-    for(let i = 0; i < myImageArray.length; i++){
-        if(myImageArray[i].name == name){
-            return(myImageArray[i].src);
-        }
-    }
-}
-*/
-
 //IMAGE DECLARATIONS
 let background = new Image();
 background.src = "img/background.png";
@@ -82,6 +58,8 @@ let scare1 = new Image();
 scare1.src = "img/scare1.png";
 let back = new Image();
 back.src = "img/back.png";
+
+//vvvvvvvvvvvvv comment out to test variable creation
 let hearts4 = new Image();
 hearts4.src = "img/hearts4.png";
 let hearts3 = new Image();
@@ -92,6 +70,8 @@ let hearts1 = new Image();
 hearts1.src = "img/hearts1.png";
 let hearts0 = new Image();
 hearts0.src = "img/hearts0.png";
+
+//^^^^^^^^^^^^^ comment out to test variable creation
 let bug1 = new Image();
 bug1.src = "img/bug1.png";
 let bug2 = new Image();
@@ -162,6 +142,15 @@ let hide = new Image();
 hide.src = "img/hide.png";
 
 
+//Test dynamic variable creation
+/*
+let myVariables = {};
+let varNames = ["hearts0", "hearts1", "hearts2", "hearts3", "hearts4"];
+for (var i=0;i<varNames.length;i+=1){
+  window[varNames[i]] = `<img src = "img/${varNames[i]}.png>"`;
+}
+console.log(hearts0);
+*/
 
 class hamtaro {
     constructor(x, y) {
@@ -209,14 +198,16 @@ let getsHungry = function () {
                 heartstatus = heartsarray[heartstatuscounter];
             }
             redrawAll();
-            confused();
+            if (ham.phase === "idle") {
+                confused();
+            }
         } else {
             heartstatuscounter -= 1;
             heartstatus = heartsarray[heartstatuscounter];
             redrawAll();
         }
         getsHungry();
-    }, 60000)
+    }, 40000)
 }
 getsHungry();
 
@@ -305,7 +296,7 @@ let randomWalking = function () {
     let numSteps = 2;
     setTimeout(function () {
         if (ham.phase === "idle") {
-            let direction = ["left", "right", "neutral", "lookleft", "lookright", "left", "right", "back"];
+            let direction = ["left", "right", "neutral", "lookleft", "lookright", "back"];
             let randomdirection = direction[Math.floor(Math.random() * direction.length)];
             if (randomdirection === "right" && ham.x !== 150) {
                 numSteps = ((Math.floor(Math.random() * 6)) + 1) * 2;
@@ -387,11 +378,13 @@ let sleeping = function () {
 }
 
 let randomSleep = function () {
-    console.log("sleep?  check if idle!" + Date.now());
-    let timeToSleep = Math.floor(Math.random() * 20000);
+    let timeToSleep = Math.floor(Math.random() * 40000);
     setTimeout(function () {
         if (ham.phase === "idle") {
             sleeping();
+            randomSleep();
+        }
+        else {
             randomSleep();
         }
     }, (20000 + timeToSleep))
@@ -450,7 +443,7 @@ let foodTime = function () {
         foodTimeRunning = true;
         ham.phase = "food";
         $(".fa").addClass("inactive");
-        let foodArray = [apple, goldapple, bean1, bean2, bean3, berry1, berry2, berry3, berry4, cd, drink, potion, seed, seed, seed, apple, apple, scarf, shades];
+        let foodArray = [apple, goldapple, bean1, bean2, bean3, berry1, berry2, berry3, berry4, cd, drink, potion, seed, scarf, shades];
         let randomPosResponseArray = [getfood1, getfood2, getfood3, getfood4, content]
         let randomFood = foodArray[Math.floor(Math.random() * foodArray.length)];
         let randomPosResponse = randomPosResponseArray[Math.floor(Math.random() * randomPosResponseArray.length)];

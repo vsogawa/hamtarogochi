@@ -1,3 +1,7 @@
+* {
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
 div {
     position: relative;
     height: 400px;
@@ -25,7 +29,7 @@ canvas {
 }
 
 .fa:hover {
-    color: #c4c4a3;
+    color: #f79d22;
 }
 
 .fa-gift {
